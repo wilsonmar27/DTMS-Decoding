@@ -33,8 +33,15 @@ seq = "";
 
 % for each frame, detect what value it is
 for i=1:num_frames
+
+    % Save audio file
+    filenameAudio = ['./temp', frames(i), '.wav'];
+    limits = [max(x), abs(min(x))];
+    x = x/(max(limits));
+    audiowrite(filenameAudio,x,fs);
+
     % use decode function to find key
-    key = DTMFdecode(frames[i]);
+    key = DTMFdecode('./temp.wav');
     strcat(seq, key);
 end
 

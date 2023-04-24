@@ -26,6 +26,12 @@ while length(pks) > 2
     locs.remove(minloc);
 end
 
+% return if no peaks found
+if (length(locs) < 2)
+    key = '';
+    return
+end
+
 freqs = [697 770 852 941 1209 1336 1477];
 
 error1 = abs(freqs - locs(1));
