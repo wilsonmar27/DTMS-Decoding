@@ -14,8 +14,6 @@ function [seq,fs] = DTMFsequence(filename)
 % load the audio file
 [x,fs] = audioread(filename);
 
-duration = length(x) / fs;  % in seconds
-
 % frame sizes
 frame_size = (250/1000) * fs;
 frame_step = (125/1000) * fs;
