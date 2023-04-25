@@ -1,5 +1,13 @@
-digits = '123456789*0#';
+% digits = '123456789*0#';
 
-for i = 1:12
-    ExportDigit(digits(i));
-end
+%for i = 1:12
+%    ExportDigit(digits(i));
+%end
+
+
+A = [DTMFdecode('digits/digit1.wav'), DTMFdecode('digits/digit2.wav'), ... 
+    DTMFdecode('digits/digit3.wav'), DTMFdecode('digits/digit4.wav'), ...
+    DTMFdecode('digits/digit5.wav'), DTMFdecode('digits/digit6.wav'), ...
+    DTMFdecode('digits/digit7.wav'), DTMFdecode('digits/digit8.wav'), ...
+    DTMFdecode('digits/digit9.wav'), DTMFdecode('digits/digitStar.wav'), ...
+    DTMFdecode('digits/digit0.wav'), DTMFdecode('digits/digit#.wav')];

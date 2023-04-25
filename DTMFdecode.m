@@ -1,5 +1,8 @@
 function [key,fs] = DTMFdecode(filename)
 
+THRESH_HEIGHT = 0.1;
+THRESH_SEPERATION = 50;
+
 [x,fs] = audioread(filename);
 samples = length(x);
 
@@ -10,37 +13,38 @@ f1 = f2(1:samples/2+1);
 f1(2:end-1) = 2*f1(2:end-1);
 f = fs*(0:(samples/2))/samples;
 
-%frequency range we care about 600Hz - 2000Hz
+%frequency range we care about 600Hz - 1600Hz
 step = f(2) - f(1);
 firstf = floor(600/step);
-secondf = ceil(2000/step);
+secondf = ceil(1600/step);
+splitf = floor(1050/step) - firstf;
 
 f1 = f1(firstf:secondf);
 f = f(firstf:secondf);
 
-[pks, locs] = findpeaks(f1,f,'MinPeakDistance',50,'MinPeakHeight',0.1);
+% range 600Hz - 1050Hz
+[pk1, loc1] = max(f1(1:splitf));
 
-while length(pks) > 2
-    [minpk, minloc] = min(pks);
-    pks.remove(minpk);
-    locs.remove(minloc);
-end
+% range 1050Hz - 1600Hz
+[pk2, loc2] = max(f1(splitf:end));
+loc2 = loc2 + splitf;
 
-% return if no peaks found
-if (length(locs) < 2)
+% return if peak is under threshhold height
+if (pk1 < THRESH_HEIGHT) || (pk2 < THRESH_HEIGHT)
     key = '';
     return
 end
 
 freqs = [697 770 852 941 1209 1336 1477];
 
-error1 = abs(freqs - locs(1));
-error2 = abs(freqs - locs(2));
+error1 = abs(freqs - f(loc1));
+error2 = abs(freqs - f(loc2));
 
 [minerr1, err1loc] = min(error1);
 [minerr2, err2loc] = min(error2);
 
-if (minerr1 > 50) || (minerr2 > 50)
+% return if peak is over threshhold seperation
+if (minerr1 > THRESH_SEPERATION) || (minerr2 > THRESH_SEPERATION)
     key = '';
     return
 end
