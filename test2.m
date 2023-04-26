@@ -1,4 +1,4 @@
-[x,fs] = audioread('DTMFex/dtmf19.wav');
+[x,fs] = audioread('DTMFex/dtmf1.wav');
 
 % rms scan window size in s
 % movement of window is half the window size
@@ -81,9 +81,9 @@ hold on
 plot(rmstime, rmsvals, 'LineWidth', 1, 'Color', "g");
 plot(rmstime, beep, 'lineWidth', 1, 'Color', "r");
 legend("Sound Wave", "Trace", "Beep");
-title("Beep Detection on dtmf15.wav");
+title("Beep Detection on dtmf1.wav");
 ylabel("Value");
 xlabel("Time (s)");
-% saveas(gcf, "assets/BeepDetect.png");
+%saveas(gcf, "assets/BeepDetect1.png");
 
 strlength(nums)

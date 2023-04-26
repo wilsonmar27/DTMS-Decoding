@@ -11,7 +11,7 @@ f1 = f2(1:round(samples/2)+1);
 f1(2:end-1) = 2*f1(2:end-1);
 f = fs*(0:(samples/2))/samples;
 
-%frequency range we care about 600Hz - 1600Hz
+%frequency range we care about 650Hz - 1550Hz
 step = f(2) - f(1);
 firstf = floor(650/step);
 secondf = ceil(1550/step);
@@ -20,10 +20,10 @@ splitf = floor(1050/step) - firstf;
 f1 = f1(firstf:secondf);
 f = f(firstf:secondf);
 
-% range 600Hz - 1050Hz
+% range 650Hz - 1050Hz
 [pk1, loc1] = max(f1(1:splitf));
 
-% range 1050Hz - 1600Hz
+% range 1050Hz - 1550Hz
 [pk2, loc2] = max(f1(splitf:end));
 loc2 = loc2 + splitf;
 
