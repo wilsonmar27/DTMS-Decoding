@@ -103,6 +103,7 @@ for i = 2:rmssize-1
     end
 end
 
+% decode beeps and add to sequence
 seq = "";
 clear i;
 for i = 1:length(beep_inter)
@@ -114,4 +115,4 @@ for i = 1:length(beep_inter)
     end
 end
 
-end
+return
