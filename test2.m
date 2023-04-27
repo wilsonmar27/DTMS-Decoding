@@ -1,17 +1,45 @@
 [x,fs] = audioread('DTMFex/dtmf6.wav');
 
+% Set frequences for bandpass filter
+FREQ_LOW = 650;
+FREQ_HI = 1550;
+
 % rms scan window size in s
 % movement of window is half the window size
 WINDOW_SIZE = 0.02;
 RMS_THRESH = 0.2;
 
-samples = length(x);
-secs = samples/fs;
-ind = linspace(0, secs, samples);   % Independent variable
-
 % scale
-limits = [max(x), abs(min(x))];
-x = x/(max(limits));
+x = x/(max([max(x), abs(min(x))]));
+
+% remove offset
+x = x - mean(x);
+
+% samples and frequency x-axis
+samples  = length(x);
+step = fs/samples;
+f  = (-fs/2:step:fs/2-step)';
+
+
+% time info
+secs = samples/fs;
+ind = linspace(0, secs, samples);
+
+% frequency response of BPF H(jw)
+BPF = ((FREQ_LOW < abs(f)) & (abs(f) < FREQ_HI));
+
+% FFT
+ftx = fftshift(fft(x))/samples;
+
+% apply filter: Y(jw) = H(jw)*X(jw)
+filtered = BPF.*ftx;
+
+% bring back to time domain
+y = ifft(ifftshift(filtered));
+y = real(y);
+
+% normalize y
+y = y/max([max(y), abs(min(y))]);
 
 % detect changes in rms to trace out the wave
 rmswindow = WINDOW_SIZE * fs;
@@ -25,7 +53,7 @@ for i = 1:rmssize
     if fin > samples
         fin = samples;
     end
-    rmsvals(i) = rms(x(beg:fin));
+    rmsvals(i) = rms(y(beg:fin));
 end
 
 % scale rms wave
@@ -62,19 +90,16 @@ for i = 2:rmssize-1
     end
 end
 
-% decode each beep
-nums = "";
+seq = "";
 clear i;
 for i = 1:length(beep_inter)
     if beep_inter(i,1) ~= 0
         startbeep = floor(beep_inter(i,1)*(samples/rmssize));
         endbeep = ceil(beep_inter(i,2)*(samples/rmssize));
-        key = DTMFdecodeSignal(x(startbeep:endbeep), fs);
-        nums = append(nums, key);
+        key = DTMFdecodeSignal(y(startbeep:endbeep), fs);
+        seq = append(seq, key);
     end
 end
-
-
 figure('position', [120,360,1200,480]);
 plot(ind,x);
 hold on
@@ -85,5 +110,3 @@ title("Predicate Detection on dtmf6.wav");
 ylabel("Value");
 xlabel("Time (s)");
 %saveas(gcf, "assets/BeepDetect6_freq.png");
-
-strlength(nums)
