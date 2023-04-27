@@ -20,34 +20,34 @@ WINDOW_SIZE = 0.02;
 RMS_THRESH = 0.2;
 
 % read file
-[x,fs] = audioread(filename);
+[audio,fs] = audioread(filename);
 
 % scale
-x = x/(max([max(x), abs(min(x))]));
+audio = audio/(max([max(audio), abs(min(audio))]));
 
 % remove offset
-x = x - mean(x);
+audio = audio - mean(audio);
 
 % samples and frequency x-axis
-samples  = length(x);
+samples  = length(audio);
 step = fs/samples;
-f  = (-fs/2:step:fs/2-step)';
+f_range  = (-fs/2:step:fs/2-step)';
 
 % frequency response of BPF H(jw)
-BPF = ((FREQ_LOW < abs(f)) & (abs(f) < FREQ_HI));
+BPF = ((FREQ_LOW < abs(f_range)) & (abs(f_range) < FREQ_HI));
 
 % FFT
-ftx = fftshift(fft(x))/samples;
+ftx = fftshift(fft(audio))/samples;
 
-% apply filter: Y(jw) = H(jw)*X(jw)
+% apply filter: Y(jw) = [H(jw)][X(jw)]
 filtered = BPF.*ftx;
 
 % bring back to time domain
-y = ifft(ifftshift(filtered));
-y = real(y);
+filt_audio = ifft(ifftshift(filtered));
+filt_audio = real(filt_audio);
 
 % normalize y
-y = y/max([max(y), abs(min(y))]);
+filt_audio = filt_audio/max([max(filt_audio), abs(min(filt_audio))]);
 
 % detect changes in rms to trace out the wave
 rmswindow = WINDOW_SIZE * fs;
@@ -61,7 +61,7 @@ for i = 1:rmssize
     if fin > samples
         fin = samples;
     end
-    rmsvals(i) = rms(y(beg:fin));
+    rmsvals(i) = rms(filt_audio(beg:fin));
 end
 
 % scale rms wave
@@ -103,7 +103,7 @@ for i = 1:length(beep_inter)
     if beep_inter(i,1) ~= 0
         startbeep = floor(beep_inter(i,1)*(samples/rmssize));
         endbeep = ceil(beep_inter(i,2)*(samples/rmssize));
-        key = DTMFdecodeSignal(y(startbeep:endbeep), fs);
+        key = DTMFdecodeSignal(filt_audio(startbeep:endbeep), fs);
         seq = append(seq, key);
     end
 end
