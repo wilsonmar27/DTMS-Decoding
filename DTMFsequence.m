@@ -33,11 +33,6 @@ samples  = length(x);
 step = fs/samples;
 f  = (-fs/2:step:fs/2-step)';
 
-
-% time info
-secs = samples/fs;
-ind = linspace(0, secs, samples);
-
 % frequency response of BPF H(jw)
 BPF = ((FREQ_LOW < abs(f)) & (abs(f) < FREQ_HI));
 
@@ -73,8 +68,6 @@ end
 rmsvals = rmsvals/max(rmsvals);
 % shift rms wave
 rmsvals = [0, rmsvals(1:end-1)];
-% rms wave time scale
-rmstime = linspace(0,secs,rmssize);
 
 % create beep
 % beep is one wherever there is a phone beep
