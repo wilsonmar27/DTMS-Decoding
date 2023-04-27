@@ -1,5 +1,17 @@
 function [key,fs] = DTMFdecodeSignal(x,fs)
 
+% Decodes an audio signal into the corresponding digit.
+%
+% Parameters:
+%   x:  Audio signal
+%   fs: sampling rate in Hz.
+%
+%
+% Output:
+%   key:    a sequence of chars corresponding to 1 of 12 possible keys.
+%   fs:     sampling rate in Hz
+
+
 THRESH_HEIGHT = 0.03;
 THRESH_SEPERATION = 50;
 samples = length(x);
@@ -47,7 +59,7 @@ if (minerr1 > THRESH_SEPERATION) || (minerr2 > THRESH_SEPERATION)
     return
 end
 
-%possible digits matrix
+% possible digits matrix
 digits = ['123'; '456'; '789'; '*0#'];
 
 key = digits(err1loc, err2loc-4);

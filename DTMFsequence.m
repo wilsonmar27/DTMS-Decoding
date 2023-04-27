@@ -1,13 +1,13 @@
 function [seq,fs] = DTMFsequence(filename)
 
-% Decodes an audio signal into the corresponding digit.
+% Decodes an audio signal into the corresponding digits by using DTMF
 %
 % Parameters:
 %   filnename: *.wav file that contains a sequence of key presses of 
 %    unknown length. (must be above 3000 Hz)
 %
 % Output:
-%   seq:    a sequence of character corresponding to one of twelve possible keys
+%   seq:    a sequence of characters corresponding the digits pressed
 %   fs:     sampling rate in Hz
 
 % Set frequences for bandpass filter
