@@ -48,8 +48,6 @@ distortion = distortion/(max([max(distortion), abs(min(distortion))]));
 % extend noise audio to match the length of the signal
 distortion = distortion(mod(0:numel(signals(1,:))-1,numel(distortion))+1); 
 
-% plot to see 
-subplot(2,1,1);
 
 % increment noise and check how many sequences are correct
 accuracy = zeros([21, 2]);
@@ -85,3 +83,9 @@ for j=1:21
 
 end
 disp(accuracy);
+figure(1);
+plot(accuracy(:,1), accuracy(:,2));
+hold on;
+title("Accuracy against different noise level");
+ylabel("Accuracy");
+xlabel("Scale Factor");
