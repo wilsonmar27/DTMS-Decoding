@@ -33,3 +33,21 @@ time = linspace(0, secs, samples);
 % reshape to rid space at the end of each signal
 signals = signals(:, 1:samples);
 
+
+% b. normalize each audio signal
+for i = 1:50
+    signals(i) = signals(i)/(max([max(signals(i)), abs(min(signals(i)))]));
+end
+
+
+% c. read and normalize babble audio (noise)
+[distortion,fs] = audioread('./babble.wav');
+distortion = distortion/(max([max(distortion), abs(min(distortion))]));
+% extend noise audio to match the length of the signal
+distortion = distortion(mod(0:numel(signals(1,:))-1,numel(distortion))+1); 
+
+% plot to see 
+subplot(2,1,1);
+plot(time, signals(1, :));
+subplot(2,1,2);
+plot(time, distortion);
