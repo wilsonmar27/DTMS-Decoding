@@ -50,11 +50,6 @@ distortion = distortion(mod(0:numel(signals(1,:))-1,numel(distortion))+1);
 
 % plot to see 
 subplot(2,1,1);
-plot(time, signals(1, :));
-subplot(2,1,2);
-plot(time, distortion);
-
-plot(time, distortion);
 
 % increment noise and check how many sequences are correct
 accuracy = zeros([21, 2]);
@@ -64,16 +59,10 @@ for j=1:21
     num_correct = 0;
     sequence = ""; 
     a = accuracy(j,1);
-
+    scaled_distortion = a .* distortion';
     for i=1:50
         seq = "";
-        noisy_signal = a .* distortion' + signals(i,:);
-
-        % plot to see
-        subplot(2,1,1);
-        plot(time, noisy_signal);
-        subplot(2,1,2);
-        plot(time, distortion);
+        noisy_signal = scaled_distortion + signals(i,:);
 
         % Save signal is temporary audio file
         x = signals(i,:);
@@ -86,11 +75,13 @@ for j=1:21
         if (seq == sequences{i})
             num_correct = num_correct + 1;
         end
-        fprintf('For noise level %d, decoded %s when answer is %s\n', a, seq, sequences{i});
-    end
 
+        % check output
+%         fprintf('For noise level %d, decoded %s when answer is %s\n', a, seq, sequences{i});
+    end
+    fprintf('For noise level %.1f, %d/50 decoded accurately\n', a, num_correct);
     % store average of that noise level
     accuracy(j,2) = num_correct/50;
 
 end
-accuracy
+disp(accuracy);
