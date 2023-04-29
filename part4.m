@@ -39,7 +39,7 @@ signals = signals(:, 1:samples);
 
 % b. normalize each audio signal
 for i = 1:50
-    signals(i) = signals(i)/(max([max(signals(i)), abs(min(signals(i)))]));
+    signals(i) = signals(i)/(max([max(signals(i,:)), abs(min(signals(i,:)))]));
 end
 
 
