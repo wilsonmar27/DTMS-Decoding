@@ -2,13 +2,14 @@
  
 keys = '0123456789*#';
 fs = 8000;
+keypresses = randi([5 20]); 
 
 % placeholder where signal will be generated
-signal = zeros([1 (12700/1000 + 200*50)*fs]);
+signal = zeros([1 (12700/1000 + 200*keypresses)*fs]);
 
-% generate 50 random phone sequences
+% a. generate 50 random phone sequences
 idx = 1; 
-for i = 1:50
+for i = 1:keypresses
      % select random key and duration
     k = keys(randi(12));   
     d = randi([20, 250]);
@@ -27,7 +28,8 @@ secs = samples/fs;
 time = linspace(0, secs, samples);
 
 % trim extra space at the end
-trimmed_signal = signal(1:samples);
+signal = signal(1:samples);
 
 
 
+plot(time, signal);
