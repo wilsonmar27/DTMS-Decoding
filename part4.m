@@ -2,18 +2,20 @@
  
 keys = '0123456789*#';
 fs = 8000;
-keypresses = randi([5 20]); 
-signals = zeros([50 (20*250/1000 + 200*keypresses)*fs]);
 
+signals = zeros([50 (20*250/1000 + 200*20)*fs]);
+sequences = cell(50, 1);
 
 % a. generate 50 random phone sequences
 samples = 0;
 for i = 1:50
-
+    keypresses = randi([5 20]); 
+    sequence = "";
     idx = 1; 
     for j = 1:keypresses
          % select random key and duration
-        k = keys(randi(12));   
+        k = keys(randi(12)); 
+        sequence = append(sequence, k);
         d = randi([20, 250]);
     
         % generate keypress with default parameters
@@ -25,6 +27,7 @@ for i = 1:50
     
     end
     samples = max([samples, idx-1]);
+    sequences{i} = sequence;
 end
 
 secs = samples/fs;
