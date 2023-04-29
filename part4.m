@@ -3,13 +3,13 @@
 keys = '0123456789*#';
 fs = 8000;
 
-signals = zeros([50 (20*250/1000 + 200*20)*fs]);
+signals = zeros([50 (10*250/1000 + 200*20)*fs]);
 sequences = cell(50, 1);
 
 % a. generate 50 random phone sequences
 samples = 0;
 for i = 1:50
-    keypresses = randi([5 20]); 
+    keypresses = randi([5 10]); 
     sequence = "";
     idx = 1; 
     for j = 1:keypresses
@@ -19,10 +19,10 @@ for i = 1:50
         d = randi([20, 250]);
     
         % generate keypress with default parameters
-        signals(i, idx:idx+(d/1000*fs)-1) = DTMFencode(k, d); 
+        signals(i, idx:idx+(d/1000*fs)-1) = DTMFencode(k, d, [1, 1], fs); 
     
         % increase index by pause and duration of keypress
-        pause_duration = (0.2*fs);
+        pause_duration = (0.1*fs);
         idx = idx + pause_duration + (d/1000*fs);
     
     end
@@ -35,7 +35,6 @@ time = linspace(0, secs, samples);
 
 % reshape to rid space at the end of each signal
 signals = signals(:, 1:samples);
-
 
 % b. normalize each audio signal
 for i = 1:50
@@ -54,3 +53,44 @@ subplot(2,1,1);
 plot(time, signals(1, :));
 subplot(2,1,2);
 plot(time, distortion);
+
+plot(time, distortion);
+
+% increment noise and check how many sequences are correct
+accuracy = zeros([21, 2]);
+accuracy(:, 1) = 1:0.1:3;
+
+for j=1:21
+    num_correct = 0;
+    sequence = ""; 
+    a = accuracy(j,1);
+
+    for i=1:50
+        seq = "";
+        noisy_signal = a .* distortion' + signals(i,:);
+
+        % plot to see
+        subplot(2,1,1);
+        plot(time, noisy_signal);
+        subplot(2,1,2);
+        plot(time, distortion);
+
+        % Save signal is temporary audio file
+        x = signals(i,:);
+        limits = [max(x), abs(min(x))];
+        x = x/(max(limits));
+        audiowrite('temp.wav',x,fs);
+      
+        % decode and check for accuracy
+        [seq, ~] = DTMFsequence('temp.wav');
+        if (seq == sequences{i})
+            num_correct = num_correct + 1;
+        end
+        fprintf('For noise level %d, decoded %s when answer is %s\n', a, seq, sequences{i});
+    end
+
+    % store average of that noise level
+    accuracy(j,2) = num_correct/50;
+
+end
+accuracy
