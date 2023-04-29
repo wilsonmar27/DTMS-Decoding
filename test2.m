@@ -14,7 +14,7 @@ x = x/(max([max(x), abs(min(x))]));
 
 % remove offset
 x = x - mean(x);
-
+  
 % samples and frequency x-axis
 samples  = length(x);
 step = fs/samples;

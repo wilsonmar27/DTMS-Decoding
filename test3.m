@@ -17,7 +17,7 @@ ind = linspace(0, secs, samples);
 % frequency response of BPF H(jw)
 BPF = ((FREQ_LOW < abs(f)) & (abs(f) < FREQ_HI));
 
-% remove offset
+% remove offset 
 x = x - mean(x);
 
 % FFT

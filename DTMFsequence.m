@@ -46,7 +46,7 @@ filtered = BPF.*ftx;
 filt_audio = ifft(ifftshift(filtered));
 filt_audio = real(filt_audio);
 
-% normalize y
+% normalize filt_audio
 filt_audio = filt_audio/max([max(filt_audio), abs(min(filt_audio))]);
 
 % detect changes in rms to trace out the wave
@@ -69,7 +69,7 @@ rmsvals = rmsvals/max(rmsvals);
 % shift rms wave
 rmsvals = [0, rmsvals(1:end-1)];
 
-% create beep
+%   create beep
 % beep is one wherever there is a phone beep
 % allocate array
 beep_inter = zeros(15, 2);
