@@ -3,33 +3,33 @@
 keys = '0123456789*#';
 fs = 8000;
 keypresses = randi([5 20]); 
+signals = zeros([50 (20*250/1000 + 200*keypresses)*fs]);
 
-% placeholder where signal will be generated
-signal = zeros([1 (12700/1000 + 200*keypresses)*fs]);
 
 % a. generate 50 random phone sequences
-idx = 1; 
-for i = 1:keypresses
-     % select random key and duration
-    k = keys(randi(12));   
-    d = randi([20, 250]);
+samples = 0;
+for i = 1:50
 
-    % generate keypress with default parameters
-    signal(idx:idx+(d/1000*fs)-1) = DTMFencode(k, d); 
-
-    % increase index by pause and duration of keypress
-    pause_duration = (0.2*fs);
-    idx = idx + pause_duration + (d/1000*fs);
-
+    idx = 1; 
+    for j = 1:keypresses
+         % select random key and duration
+        k = keys(randi(12));   
+        d = randi([20, 250]);
+    
+        % generate keypress with default parameters
+        signals(i, idx:idx+(d/1000*fs)-1) = DTMFencode(k, d); 
+    
+        % increase index by pause and duration of keypress
+        pause_duration = (0.2*fs);
+        idx = idx + pause_duration + (d/1000*fs);
+    
+    end
+    samples = max([samples, idx-1]);
 end
 
-samples = idx-1;
 secs = samples/fs;
 time = linspace(0, secs, samples);
 
-% trim extra space at the end
-signal = signal(1:samples);
+% reshape to rid space at the end of each signal
+signals = signals(:, 1:samples);
 
-
-
-plot(time, signal);
